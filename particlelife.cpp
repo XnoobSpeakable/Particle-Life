@@ -100,7 +100,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesa[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (50.0f < distance && distance < 100.0f) {
+            if (1.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -115,7 +115,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesb[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (50.0f < distance && distance < 100.0f) {
+            if (1.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -127,16 +127,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         const SDL_FPoint distancea = { elapsed * pa_vel[i].x, elapsed * pa_vel[i].y };
-        pa_vel[i].x *= 0.99f;
-        pa_vel[i].y *= 0.99f;
+        pa_vel[i].x *= 0.98f;
+        pa_vel[i].y *= 0.98f;
         particlesa[i].x += distancea.x;
         particlesa[i].y += distancea.y;
         particlesa[i].x = nnfmod(particlesa[i].x, WINDOW_WIDTH);
         particlesa[i].y = nnfmod(particlesa[i].y, WINDOW_HEIGHT);
 
         const SDL_FPoint distanceb = { elapsed * pb_vel[i].x, elapsed * pb_vel[i].y };
-        pb_vel[i].x *= 0.99f;
-        pb_vel[i].y *= 0.99f;
+        pb_vel[i].x *= 0.98f;
+        pb_vel[i].y *= 0.98f;
         particlesb[i].x += distanceb.x;
         particlesb[i].y += distanceb.y;
         particlesb[i].x = nnfmod(particlesb[i].x, WINDOW_WIDTH);
