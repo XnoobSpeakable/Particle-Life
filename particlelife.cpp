@@ -14,6 +14,8 @@ static Uint64 last_time = 0;
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static float pa_vel[NUM_POINTS];
+static SDL_FPoint particlesb[NUM_POINTS];
+static float pb_vel[NUM_POINTS];
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -58,10 +60,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
     const Uint64 now = SDL_GetTicks();
-    const float elapsed = ((float) (now - last_time)) / 1000.0f;  /* seconds since last iteration */
+    const float elapsed = ((float) (now - last_time)) / 1000.0f;
     int i;
 
-    /* let's move all our points a little for a new frame. */
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         const float distancea = elapsed * pa_vel[i];
         particlesa[i].x += distancea;
