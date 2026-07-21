@@ -74,11 +74,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dx = particlesa[a].x - particlesb[b].x;
             const float dy = particlesa[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
+            const SDL_FPoint direction = { dx / distance, dy / distance };
             if (distance < 50.0f) {
-                pa_vel[a].x += 10.0f / distance;
-                pa_vel[a].y += 10.0f / distance;
-                pb_vel[b].x += 10.0f / distance;
-                pb_vel[b].y += 10.0f / distance;
+                pa_vel[a].x += direction.x * 10.0f / distance;
+                pa_vel[a].y += direction.y * 10.0f / distance;
+                pb_vel[b].x += -direction.x * 10.0f / distance;
+                pb_vel[b].y += -direction.y * 10.0f / distance;
             }
         }
     }
