@@ -12,8 +12,8 @@ static Uint64 last_time = 0;
 
 #define NUM_POINTS 500
 
-static SDL_FPoint points[NUM_POINTS];
-static float point_speeds[NUM_POINTS];
+static SDL_FPoint particlesa[NUM_POINTS];
+static float pa_vel[NUM_POINTS];
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -34,10 +34,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     /* set up the data for a bunch of points. */
-    for (i = 0; i < SDL_arraysize(points); i++) {
-        points[i].x = SDL_randf() * ((float) WINDOW_WIDTH);
-        points[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
-        point_speeds[i] = 0;
+    for (i = 0; i < SDL_arraysize(particlesa); i++) {
+        particlesa[i].x = SDL_randf() * ((float) WINDOW_WIDTH);
+        particlesa[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
+        pa_vel[i] = 0;
     }
 
     last_time = SDL_GetTicks();
@@ -62,13 +62,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     int i;
 
     /* let's move all our points a little for a new frame. */
-    for (i = 0; i < SDL_arraysize(points); i++) {
-        const float distance = elapsed * point_speeds[i];
-        points[i].x += distance;
-        points[i].y += distance;
-        if ((points[i].x >= WINDOW_WIDTH) || (points[i].y >= WINDOW_HEIGHT)) {
-            points[i].x = std::fmod(points[i].x, WINDOW_WIDTH);
-            points[i].y = std::fmod(points[i].y, WINDOW_HEIGHT);
+    for (i = 0; i < SDL_arraysize(particlesa); i++) {
+        const float distance = elapsed * pa_vel[i];
+        particlesa[i].x += distance;
+        particlesa[i].y += distance;
+        if ((particlesa[i].x >= WINDOW_WIDTH) || (particlesa[i].y >= WINDOW_HEIGHT)) {
+            particlesa[i].x = std::fmod(particlesa[i].x, WINDOW_WIDTH);
+            particlesa[i].y = std::fmod(particlesa[i].y, WINDOW_HEIGHT);
         }
     }
 
@@ -77,7 +77,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    SDL_RenderPoints(renderer, points, SDL_arraysize(points));
+    SDL_RenderPoints(renderer, particlesa, SDL_arraysize(particlesa));
     SDL_RenderPresent(renderer);
 
     return SDL_APP_CONTINUE;
