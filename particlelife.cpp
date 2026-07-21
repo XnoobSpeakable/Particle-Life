@@ -76,10 +76,40 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
             if (5.0f < distance && distance < 50.0f) {
-                pa_vel[a].x += direction.x * -10.0f / distance;
-                pa_vel[a].y += direction.y * -10.0f / distance;
-                pb_vel[b].x += -direction.x * -10.0f / distance;
-                pb_vel[b].y += -direction.y * -10.0f / distance;
+                pa_vel[a].x += direction.x * -5.0f / distance;
+                pa_vel[a].y += direction.y * -5.0f / distance;
+                pb_vel[b].x += -direction.x * -5.0f / distance;
+                pb_vel[b].y += -direction.y * -5.0f / distance;
+            }
+        }
+    }
+    
+    for (int a = 0; a < SDL_arraysize(particlesa); a++) {
+        for (int b = 0; b < SDL_arraysize(particlesa); b++) {
+            const float dx = particlesa[a].x - particlesa[b].x;
+            const float dy = particlesa[a].y - particlesa[b].y;
+            const float distance = std::sqrt(dx * dx + dy * dy);
+            const SDL_FPoint direction = { dx / distance, dy / distance };
+            if (5.0f < distance && distance < 50.0f) {
+                pa_vel[a].x += direction.x * 2.0f / distance;
+                pa_vel[a].y += direction.y * 2.0f / distance;
+                pb_vel[b].x += -direction.x * 2.0f / distance;
+                pb_vel[b].y += -direction.y * 2.0f / distance;
+            }
+        }
+    }
+    
+    for (int a = 0; a < SDL_arraysize(particlesb); a++) {
+        for (int b = 0; b < SDL_arraysize(particlesb); b++) {
+            const float dx = particlesb[a].x - particlesb[b].x;
+            const float dy = particlesb[a].y - particlesb[b].y;
+            const float distance = std::sqrt(dx * dx + dy * dy);
+            const SDL_FPoint direction = { dx / distance, dy / distance };
+            if (5.0f < distance && distance < 50.0f) {
+                pa_vel[a].x += direction.x * 2.0f / distance;
+                pa_vel[a].y += direction.y * 2.0f / distance;
+                pb_vel[b].x += -direction.x * 2.0f / distance;
+                pb_vel[b].y += -direction.y * 2.0f / distance;
             }
         }
     }
@@ -87,6 +117,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         const SDL_FPoint distancea = { elapsed * pa_vel[i].x, elapsed * pa_vel[i].y };
+        pa_vel[i].x *= 0.99f;
+        pa_vel[i].y *= 0.99f;
         particlesa[i].x += distancea.x;
         particlesa[i].y += distancea.y;
         if ((particlesa[i].x >= WINDOW_WIDTH) || (particlesa[i].y >= WINDOW_HEIGHT)) {
@@ -95,6 +127,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         }
 
         const SDL_FPoint distanceb = { elapsed * pb_vel[i].x, elapsed * pb_vel[i].y };
+        pb_vel[i].x *= 0.99f;
+        pb_vel[i].y *= 0.99f;
         particlesb[i].x += distanceb.x;
         particlesb[i].y += distanceb.y;
         if ((particlesb[i].x >= WINDOW_WIDTH) || (particlesb[i].y >= WINDOW_HEIGHT)) {
