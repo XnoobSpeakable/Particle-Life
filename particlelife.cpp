@@ -10,12 +10,12 @@ static Uint64 last_time = 0;
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-#define NUM_POINTS 50
+#define NUM_POINTS 500
 
 static SDL_FPoint particlesa[NUM_POINTS];
-static float pa_vel[NUM_POINTS];
+static SDL_FPoint pa_vel[NUM_POINTS];
 static SDL_FPoint particlesb[NUM_POINTS];
-static float pb_vel[NUM_POINTS];
+static SDL_FPoint pb_vel[NUM_POINTS];
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -39,12 +39,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         particlesa[i].x = SDL_randf() * ((float) WINDOW_WIDTH);
         particlesa[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
-        pa_vel[i] = 0;
+        pa_vel[i] = { 0, 0 };
     }
     for (i = 0; i < SDL_arraysize(particlesb); i++) {
         particlesb[i].x = SDL_randf() * ((float) WINDOW_WIDTH);
         particlesb[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
-        pb_vel[i] = 0;
+        pb_vel[i] = { 0, 0 };
     }
 
     last_time = SDL_GetTicks();
@@ -75,25 +75,27 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             if (distance < 50.0f) {
-                pa_vel[a] += 10.0f / distance;
-                pb_vel[b] += 10.0f / distance;
+                pa_vel[a].x += 10.0f / distance;
+                pa_vel[a].y += 10.0f / distance;
+                pb_vel[b].x += 10.0f / distance;
+                pb_vel[b].y += 10.0f / distance;
             }
         }
     }
 
     // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
-        const float distancea = elapsed * pa_vel[i];
-        particlesa[i].x += distancea;
-        particlesa[i].y += distancea;
+        const SDL_FPoint distancea = { elapsed * pa_vel[i].x, elapsed * pa_vel[i].y };
+        particlesa[i].x += distancea.x;
+        particlesa[i].y += distancea.y;
         if ((particlesa[i].x >= WINDOW_WIDTH) || (particlesa[i].y >= WINDOW_HEIGHT)) {
             particlesa[i].x = std::fmod(particlesa[i].x, WINDOW_WIDTH);
             particlesa[i].y = std::fmod(particlesa[i].y, WINDOW_HEIGHT);
         }
 
-        const float distanceb = elapsed * pb_vel[i];
-        particlesb[i].x += distanceb;
-        particlesb[i].y += distanceb;
+        const SDL_FPoint distanceb = { elapsed * pb_vel[i].x, elapsed * pb_vel[i].y };
+        particlesb[i].x += distanceb.x;
+        particlesb[i].y += distanceb.y;
         if ((particlesb[i].x >= WINDOW_WIDTH) || (particlesb[i].y >= WINDOW_HEIGHT)) {
             particlesb[i].x = std::fmod(particlesb[i].x, WINDOW_WIDTH);
             particlesb[i].y = std::fmod(particlesb[i].y, WINDOW_HEIGHT);
