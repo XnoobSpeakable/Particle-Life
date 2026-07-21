@@ -41,6 +41,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         particlesa[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
         pa_vel[i] = 0;
     }
+    for (i = 0; i < SDL_arraysize(particlesb); i++) {
+        particlesb[i].x = SDL_randf() * ((float) WINDOW_WIDTH);
+        particlesb[i].y = SDL_randf() * ((float) WINDOW_HEIGHT);
+        pb_vel[i] = 0;
+    }
 
     last_time = SDL_GetTicks();
 
@@ -72,7 +77,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             particlesa[i].y = std::fmod(particlesa[i].y, WINDOW_HEIGHT);
         }
 
-        const float distanceb = elapsed * pa_vel[i];
+        const float distanceb = elapsed * pb_vel[i];
         particlesb[i].x += distanceb;
         particlesb[i].y += distanceb;
         if ((particlesb[i].x >= WINDOW_WIDTH) || (particlesb[i].y >= WINDOW_HEIGHT)) {

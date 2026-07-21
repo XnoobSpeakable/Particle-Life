@@ -4,11 +4,12 @@
 /build/x64
 /build/*.vcxproj
 /build/*.vcxproj.filters
-/build/b*
+/build/*
 /build/*.cmake
 /build/*.txt
 /build/Makefile
-/build/Debug
+/build/Debug/
+/build/Debug/*
 /build/Release/
 /build/Release/*
 /vendored/SDL
