@@ -76,7 +76,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     const Uint64 now = SDL_GetTicks();
     const float elapsed = ((float) (now - last_time)) / 1000.0f;
     int i;
-    std::cout << "Elapsed time: " << elapsed << std::endl;
+    std::cout << "Elapsed time: " << ((float) (now - last_time)) << std::endl;
 
     //interaction stuff
     for (int a = 0; a < SDL_arraysize(particlesa); a++) {
