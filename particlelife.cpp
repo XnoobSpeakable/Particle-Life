@@ -11,8 +11,8 @@ static Uint64 last_time = 0;
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 960
 
-#define NUM_POINTS 500
-#define SIM_SPEED 5
+#define NUM_POINTS 1000
+#define SIM_SPEED 1
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static SDL_FPoint pa_vel[NUM_POINTS];
@@ -104,7 +104,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesa[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (1.0f < distance && distance < 100.0f) {
+            if (50.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -120,7 +120,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesb[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (1.0f < distance && distance < 100.0f) {
+            if (50.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
