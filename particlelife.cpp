@@ -68,6 +68,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     const float elapsed = ((float) (now - last_time)) / 1000.0f;
     int i;
 
+    //interaction stuff
+    for (SDL_FPoint particle : particlesa) {
+        for (SDL_FPoint particleb : particlesb) {
+            const float dx = particle.x - particleb.x;
+            const float dy = particle.y - particleb.y;
+            const float distance = std::sqrt(dx * dx + dy * dy);
+            if (distance < 50.0f) {
+                pa_vel[&particle - particlesa] += 10.0f / distance;
+                pb_vel[&particleb - particlesb] += 10.0f / distance;
+            }
+        }
+    }
+
+    // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         const float distancea = elapsed * pa_vel[i];
         particlesa[i].x += distancea;
