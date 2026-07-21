@@ -110,7 +110,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderPoints(renderer, particlesa, SDL_arraysize(particlesa));
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderPoints(renderer, particlesb, SDL_arraysize(particlesb));
     SDL_RenderPresent(renderer);
 
