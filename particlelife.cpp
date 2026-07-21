@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
     surface = SDL_LoadBMP("./assets/textures/h.bmp");
     SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr);
     SDL_UpdateWindowSurface(window);
+    SDL_DestroySurface(surface);
     
     // Initialize events and keyboard state
     SDL_Event event;
