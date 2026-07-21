@@ -17,6 +17,14 @@ static SDL_FPoint pa_vel[NUM_POINTS];
 static SDL_FPoint particlesb[NUM_POINTS];
 static SDL_FPoint pb_vel[NUM_POINTS];
 
+float nnfmod(float a, float b) {
+    float r = fmod(a, b);
+    if (r!=0 && ((r<0) != (b<0))) {
+        r += b;
+    }
+    return r;
+}
+
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
@@ -75,7 +83,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (5.0f < distance && distance < 50.0f) {
+            if (50.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * -5.0f / distance;
                 pa_vel[a].y += direction.y * -5.0f / distance;
                 pb_vel[b].x += -direction.x * -5.0f / distance;
@@ -90,7 +98,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesa[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (5.0f < distance && distance < 50.0f) {
+            if (50.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -105,7 +113,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesb[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (5.0f < distance && distance < 50.0f) {
+            if (50.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -121,20 +129,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         pa_vel[i].y *= 0.99f;
         particlesa[i].x += distancea.x;
         particlesa[i].y += distancea.y;
-        if ((particlesa[i].x >= WINDOW_WIDTH) || (particlesa[i].y >= WINDOW_HEIGHT)) {
-            particlesa[i].x = std::fmod(particlesa[i].x, WINDOW_WIDTH);
-            particlesa[i].y = std::fmod(particlesa[i].y, WINDOW_HEIGHT);
-        }
+        particlesa[i].x = nnfmod(particlesa[i].x, WINDOW_WIDTH);
+        particlesa[i].y = nnfmod(particlesa[i].y, WINDOW_HEIGHT);
 
         const SDL_FPoint distanceb = { elapsed * pb_vel[i].x, elapsed * pb_vel[i].y };
         pb_vel[i].x *= 0.99f;
         pb_vel[i].y *= 0.99f;
         particlesb[i].x += distanceb.x;
         particlesb[i].y += distanceb.y;
-        if ((particlesb[i].x >= WINDOW_WIDTH) || (particlesb[i].y >= WINDOW_HEIGHT)) {
-            particlesb[i].x = std::fmod(particlesb[i].x, WINDOW_WIDTH);
-            particlesb[i].y = std::fmod(particlesb[i].y, WINDOW_HEIGHT);
-        }
+        particlesb[i].x = nnfmod(particlesb[i].x, WINDOW_WIDTH);
+        particlesb[i].y = nnfmod(particlesb[i].y, WINDOW_HEIGHT);
     }
         
 
