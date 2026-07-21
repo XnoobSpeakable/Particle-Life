@@ -11,6 +11,7 @@
 /build/Makefile
 /build/Debug
 /build/Release/
+/build/Release/*
 /vendored/SDL
 /vendored/SDL3_mixer
 vc140.pdb
