@@ -11,8 +11,8 @@ static Uint64 last_time = 0;
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 960
 
-#define NUM_POINTS 1000
-#define SIM_SPEED 1
+#define NUM_POINTS 500
+#define SIM_SPEED 50
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static SDL_FPoint pa_vel[NUM_POINTS];
@@ -129,23 +129,73 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         }
     }
 
+    //wall interaction stuff
+    for (int a = 0; a < SDL_arraysize(particlesa); a++) {
+        if (particlesa[a].x < 50.0f) pa_vel[a].x += 20.0f / particlesa[a].x;
+        if (particlesa[a].y < 50.0f) pa_vel[a].y += 20.0f / particlesa[a].y;
+        if (particlesa[a].x > WINDOW_WIDTH - 51.0f) pa_vel[a].x += -20.0f / (WINDOW_WIDTH - particlesa[a].x - 1);
+        if (particlesa[a].y > WINDOW_HEIGHT - 51.0f) pa_vel[a].y += -20.0f / (WINDOW_HEIGHT - particlesa[a].y - 1);
+    }
+
+    //wall interaction stuff
+    for (int a = 0; a < SDL_arraysize(particlesb); a++) {
+        if (particlesb[a].x < 50.0f) pb_vel[a].x += 20.0f / particlesb[a].x;
+        if (particlesb[a].y < 50.0f) pb_vel[a].y += 20.0f / particlesb[a].y;
+        if (particlesb[a].x > WINDOW_WIDTH - 51.0f) pb_vel[a].x += -20.0f / (WINDOW_WIDTH - particlesb[a].x - 1);
+        if (particlesb[a].y > WINDOW_HEIGHT - 51.0f) pb_vel[a].y += -20.0f / (WINDOW_HEIGHT - particlesb[a].y - 1);
+    }
+
     // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
         const SDL_FPoint distancea = { elapsedMod * pa_vel[i].x, elapsedMod * pa_vel[i].y };
-        pa_vel[i].x *= 0.98f;
-        pa_vel[i].y *= 0.98f;
+        const float velocitya = std::sqrt(pa_vel[i].x * pa_vel[i].x + pa_vel[i].y * pa_vel[i].y);
+        pa_vel[i].x *= 1.0f / velocitya;
+        pa_vel[i].y *= 1.0f / velocitya;
         particlesa[i].x += distancea.x;
         particlesa[i].y += distancea.y;
-        particlesa[i].x = nnfmod(particlesa[i].x, WINDOW_WIDTH);
-        particlesa[i].y = nnfmod(particlesa[i].y, WINDOW_HEIGHT);
+        // particlesa[i].x = nnfmod(particlesa[i].x, WINDOW_WIDTH);
+        // particlesa[i].y = nnfmod(particlesa[i].y, WINDOW_HEIGHT);
+        if (particlesa[i].x < 0) {
+            particlesa[i].x = -particlesa[i].x;
+            pa_vel[i].x = -pa_vel[i].x;
+        }
+        if (particlesa[i].y < 0) {
+            particlesa[i].y = -particlesa[i].y;
+            pa_vel[i].y = -pa_vel[i].y;
+        }
+        if (particlesa[i].x >= WINDOW_WIDTH - 1) {
+            particlesa[i].x = 2 * WINDOW_WIDTH - particlesa[i].x - 2;
+            pa_vel[i].x = -pa_vel[i].x;
+        }
+        if (particlesa[i].y >= WINDOW_HEIGHT - 1) {
+            particlesa[i].y = 2 * WINDOW_HEIGHT - particlesa[i].y - 2;
+            pa_vel[i].y = -pa_vel[i].y;
+        }
 
         const SDL_FPoint distanceb = { elapsedMod * pb_vel[i].x, elapsedMod * pb_vel[i].y };
-        pb_vel[i].x *= 0.98f;
-        pb_vel[i].y *= 0.98f;
+        const float velocityb = std::sqrt(pb_vel[i].x * pb_vel[i].x + pb_vel[i].y * pb_vel[i].y);
+        pb_vel[i].x *= 1.0f / velocityb;
+        pb_vel[i].y *= 1.0f / velocityb;
         particlesb[i].x += distanceb.x;
         particlesb[i].y += distanceb.y;
-        particlesb[i].x = nnfmod(particlesb[i].x, WINDOW_WIDTH);
-        particlesb[i].y = nnfmod(particlesb[i].y, WINDOW_HEIGHT);
+        // particlesb[i].x = nnfmod(particlesb[i].x, WINDOW_WIDTH);
+        // particlesb[i].y = nnfmod(particlesb[i].y, WINDOW_HEIGHT);
+        if (particlesb[i].x < 0) {
+            particlesb[i].x = -particlesb[i].x;
+            pb_vel[i].x = -pb_vel[i].x;
+        }
+        if (particlesb[i].y < 0) {
+            particlesb[i].y = -particlesb[i].y;
+            pb_vel[i].y = -pb_vel[i].y;
+        }
+        if (particlesb[i].x >= WINDOW_WIDTH - 1) {
+            particlesb[i].x = 2 * WINDOW_WIDTH - particlesb[i].x - 2;
+            pb_vel[i].x = -pb_vel[i].x;
+        }
+        if (particlesb[i].y >= WINDOW_HEIGHT - 1) {
+            particlesb[i].y = 2 * WINDOW_HEIGHT - particlesb[i].y - 2;
+            pb_vel[i].y = -pb_vel[i].y;
+        }
     }
         
 
