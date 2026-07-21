@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     double targetFPS = 180.0;
     double targetFrameTime = 1e9 / targetFPS;
     bool limitFPS = true;
-    bool calculateFPS = false;
+    bool calculateFPS = true;
 
     // Initialize Window
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
