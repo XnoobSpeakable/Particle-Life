@@ -12,6 +12,7 @@ static Uint64 last_time = 0;
 #define WINDOW_HEIGHT 960
 
 #define NUM_POINTS 500
+#define SIM_SPEED 5
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static SDL_FPoint pa_vel[NUM_POINTS];
@@ -74,9 +75,11 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
     const Uint64 now = SDL_GetTicks();
-    const float elapsed = ((float) (now - last_time)) / 1000.0f;
+    const float elapsedRaw = ((float) (now - last_time));
+    const float elapsed = elapsedRaw / 1000.0f;
+    const float elapsedMod = elapsed * SIM_SPEED;
+    std::cout << "frame time ms: " << elapsedRaw << std::endl;
     int i;
-    std::cout << "Elapsed time: " << ((float) (now - last_time)) << std::endl;
 
     //interaction stuff
     for (int a = 0; a < SDL_arraysize(particlesa); a++) {
@@ -94,6 +97,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         }
     }
     
+    //self-interaction stuff
     for (int a = 0; a < SDL_arraysize(particlesa); a++) {
         for (int b = 0; b < SDL_arraysize(particlesa); b++) {
             const float dx = particlesa[a].x - particlesa[b].x;
@@ -109,6 +113,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         }
     }
     
+    //self-interaction stuff
     for (int a = 0; a < SDL_arraysize(particlesb); a++) {
         for (int b = 0; b < SDL_arraysize(particlesb); b++) {
             const float dx = particlesb[a].x - particlesb[b].x;
@@ -126,7 +131,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     // velocity movement stuff
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
-        const SDL_FPoint distancea = { elapsed * pa_vel[i].x, elapsed * pa_vel[i].y };
+        const SDL_FPoint distancea = { elapsedMod * pa_vel[i].x, elapsedMod * pa_vel[i].y };
         pa_vel[i].x *= 0.99f;
         pa_vel[i].y *= 0.99f;
         particlesa[i].x += distancea.x;
@@ -134,7 +139,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         particlesa[i].x = nnfmod(particlesa[i].x, WINDOW_WIDTH);
         particlesa[i].y = nnfmod(particlesa[i].y, WINDOW_HEIGHT);
 
-        const SDL_FPoint distanceb = { elapsed * pb_vel[i].x, elapsed * pb_vel[i].y };
+        const SDL_FPoint distanceb = { elapsedMod * pb_vel[i].x, elapsedMod * pb_vel[i].y };
         pb_vel[i].x *= 0.99f;
         pb_vel[i].y *= 0.99f;
         particlesb[i].x += distanceb.x;
