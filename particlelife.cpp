@@ -63,14 +63,23 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     /* let's move all our points a little for a new frame. */
     for (i = 0; i < SDL_arraysize(particlesa); i++) {
-        const float distance = elapsed * pa_vel[i];
-        particlesa[i].x += distance;
-        particlesa[i].y += distance;
+        const float distancea = elapsed * pa_vel[i];
+        particlesa[i].x += distancea;
+        particlesa[i].y += distancea;
         if ((particlesa[i].x >= WINDOW_WIDTH) || (particlesa[i].y >= WINDOW_HEIGHT)) {
             particlesa[i].x = std::fmod(particlesa[i].x, WINDOW_WIDTH);
             particlesa[i].y = std::fmod(particlesa[i].y, WINDOW_HEIGHT);
         }
+
+        const float distanceb = elapsed * pa_vel[i];
+        particlesb[i].x += distanceb;
+        particlesb[i].y += distanceb;
+        if ((particlesb[i].x >= WINDOW_WIDTH) || (particlesb[i].y >= WINDOW_HEIGHT)) {
+            particlesb[i].x = std::fmod(particlesb[i].x, WINDOW_WIDTH);
+            particlesb[i].y = std::fmod(particlesb[i].y, WINDOW_HEIGHT);
+        }
     }
+        
 
     last_time = now;
 
@@ -78,6 +87,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderPoints(renderer, particlesa, SDL_arraysize(particlesa));
+    SDL_RenderPoints(renderer, particlesb, SDL_arraysize(particlesb));
     SDL_RenderPresent(renderer);
 
     return SDL_APP_CONTINUE;
