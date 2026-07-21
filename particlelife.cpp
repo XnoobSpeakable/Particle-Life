@@ -11,8 +11,8 @@ static Uint64 last_time = 0;
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 960
 
-#define NUM_POINTS 500
-#define SIM_SPEED 50
+#define NUM_POINTS 1000
+#define SIM_SPEED 1
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static SDL_FPoint pa_vel[NUM_POINTS];
@@ -71,16 +71,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     return SDL_APP_CONTINUE;
 }
 
-/* This function runs once per frame, and is the heart of the program. */
-SDL_AppResult SDL_AppIterate(void *appstate)
-{
-    const Uint64 now = SDL_GetTicks();
-    const float elapsedRaw = ((float) (now - last_time));
-    const float elapsed = elapsedRaw / 1000.0f;
-    const float elapsedMod = elapsed * SIM_SPEED;
-    std::cout << "frame time ms: " << elapsedRaw << std::endl;
-    int i;
-
+void step() {
     //interaction stuff
     for (int a = 0; a < SDL_arraysize(particlesa); a++) {
         for (int b = 0; b < SDL_arraysize(particlesb); b++) {
@@ -104,7 +95,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesa[a].y - particlesa[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (50.0f < distance && distance < 100.0f) {
+            if (1.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -120,7 +111,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             const float dy = particlesb[a].y - particlesb[b].y;
             const float distance = std::sqrt(dx * dx + dy * dy);
             const SDL_FPoint direction = { dx / distance, dy / distance };
-            if (50.0f < distance && distance < 100.0f) {
+            if (1.0f < distance && distance < 100.0f) {
                 pa_vel[a].x += direction.x * 2.0f / distance;
                 pa_vel[a].y += direction.y * 2.0f / distance;
                 pb_vel[b].x += -direction.x * 2.0f / distance;
@@ -146,8 +137,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     }
 
     // velocity movement stuff
-    for (i = 0; i < SDL_arraysize(particlesa); i++) {
-        const SDL_FPoint distancea = { elapsedMod * pa_vel[i].x, elapsedMod * pa_vel[i].y };
+    for (int i = 0; i < SDL_arraysize(particlesa); i++) {
+        const SDL_FPoint distancea = { pa_vel[i].x, pa_vel[i].y };
         const float velocitya = std::sqrt(pa_vel[i].x * pa_vel[i].x + pa_vel[i].y * pa_vel[i].y);
         pa_vel[i].x *= 1.0f / velocitya;
         pa_vel[i].y *= 1.0f / velocitya;
@@ -172,7 +163,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             pa_vel[i].y = -pa_vel[i].y;
         }
 
-        const SDL_FPoint distanceb = { elapsedMod * pb_vel[i].x, elapsedMod * pb_vel[i].y };
+        const SDL_FPoint distanceb = { pb_vel[i].x, pb_vel[i].y };
         const float velocityb = std::sqrt(pb_vel[i].x * pb_vel[i].x + pb_vel[i].y * pb_vel[i].y);
         pb_vel[i].x *= 1.0f / velocityb;
         pb_vel[i].y *= 1.0f / velocityb;
@@ -197,9 +188,19 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             pb_vel[i].y = -pb_vel[i].y;
         }
     }
-        
+}
 
+/* This function runs once per frame, and is the heart of the program. */
+SDL_AppResult SDL_AppIterate(void *appstate)
+{
+    const Uint64 now = SDL_GetTicks();
+    const float elapsedRaw = ((float) (now - last_time));
+    std::cout << "frame time ms: " << elapsedRaw << std::endl;
     last_time = now;
+
+    for (int i = 0; i < SIM_SPEED; i++) {
+        step();
+    }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
