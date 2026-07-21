@@ -10,7 +10,7 @@ static Uint64 last_time = 0;
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-#define NUM_POINTS 500
+#define NUM_POINTS 50
 
 static SDL_FPoint particlesa[NUM_POINTS];
 static float pa_vel[NUM_POINTS];
